@@ -1,0 +1,7 @@
+[web]
+host = "0.0.0.0"
+port = 8000
+key = "123456"
+
+[database]
+models = ["app.db.functions", "aerich.models"]
