@@ -3,6 +3,7 @@ from app.blockchain import Coin
 import os, json
 import logging
 import coloredlogs
+from datetime import datetime
 from app.config import parse_config
 
 
@@ -55,7 +56,17 @@ def transfer(from_: str, to: str, amount: float):
     :param from_: str: Private key of the sender (pve)
     :param to: str: Public key of the receiver (pbc)
     """
-    return blockchain.create_transaction(from_, to, amount)
+    try:
+        transaction = blockchain.create_transaction(
+            datetime.now(),
+            data={
+                "type": "token-transfer",
+                "data": {"to": to, "from": from_, "amount": amount},
+            },
+        )
+        return transaction
+    except Exception as e:
+        return {"error": str(e)}
 
 
 @router.post("/credit")
