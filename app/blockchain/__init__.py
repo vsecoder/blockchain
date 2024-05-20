@@ -89,6 +89,34 @@ class Coin:
             addresses=self.Wallet,
         )
 
+    def transfer_nft(self, timestamp, data) -> None:
+        """
+        Transfer an NFT
+
+        :param timestamp: float: Timestamp of the transaction
+        :param data: dict: Data of the transaction
+
+        :return: None
+        """
+        self.coin.pending_transactions.append(Transaction(timestamp, data=data))
+        self._create_block(
+            addresses=self.Wallet,
+        )
+
+    def create_nft(self, timestamp, data) -> None:
+        """
+        Create a new NFT
+
+        :param timestamp: float: Timestamp of the transaction
+        :param data: dict: Data of the transaction
+
+        :return: None
+        """
+        self.coin.pending_transactions.append(Transaction(timestamp, data=data))
+        self._create_block(
+            addresses=self.Wallet,
+        )
+
     def get_transaction(self, data) -> Union[Transaction, None]:
         """
         Get a transaction by its hash

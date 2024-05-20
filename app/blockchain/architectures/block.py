@@ -1,5 +1,6 @@
 from .transaction import Transaction
 from .wallet import Wallet
+from .nft import NFT
 import hashlib
 from typing import Union
 from datetime import datetime
@@ -21,8 +22,10 @@ class Block:
         transactions: Union[str, list] = [],
         previous_hash="",
         addresses="",
+        nft="",
     ):
         self.addresses = addresses
+        self.nft = nft
         self.timestamp = timestamp
         self.transactions = transactions
         self.previous_hash = previous_hash
@@ -55,6 +58,27 @@ class Block:
                         self.addresses.credit_wallet(
                             pbc, -float(transaction.input["data"]["amount"])
                         )
+
+            if transaction.input["type"] == "nft-transfer":
+                nft = self.addresses.get_nft(transaction.input["data"]["nft"])
+                from_ = transaction.input["data"]["from"]  # pve
+                to_ = transaction.input["data"]["to"]  # pbc
+                self.addresses.give_nft(to_, nft)
+                self.addresses.take_nft(from_, nft)
+
+            if transaction.input["type"] == "nft-create":
+                if not self.nft:
+                    self.nft = []
+                nft = NFT(
+                    transaction.input["data"]["name"],
+                    transaction.input["data"]["description"],
+                    transaction.input["data"]["url"],
+                    transaction.input["data"]["owner"],
+                    transaction.timestamp,
+                )
+                self.nft.append(nft)
+                self.addresses.give_nft(transaction.input["data"]["owner"], nft)
+
         self.status = 1
 
     def get_hash(self) -> str:
@@ -87,6 +111,7 @@ class Block:
             "previous_hash": self.previous_hash,
             "hash": self.hash,
             "status": self.status,
+            "nft": [nft.to_dict() for nft in self.nft] if self.nft else "",
         }
 
         return obj
@@ -107,6 +132,18 @@ class Block:
                 self.transactions.append(transaction_class.from_dict(transaction))
             else:
                 self.transactions.append(transaction)
+
+        # reinit nft
+        self.nft = []
+        for nft in obj["nft"]:
+            nft_class = NFT(
+                nft["name"],
+                nft["description"],
+                nft["url"],
+                nft["owner"],
+                nft["timestamp"],
+            )
+            self.nft.append(nft_class)
 
         self.previous_hash = obj["previous_hash"]
         self.hash = obj["hash"]
