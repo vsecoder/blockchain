@@ -110,6 +110,52 @@ def validate_wallet(private_key: str, public_key: str):
     return blockchain.Wallet.validate_wallet(private_key, public_key)
 
 
+@router.post("/nft")
+def create_nft(name: str, description: str, url: str, owner: str):
+    """
+    Create a new NFT
+
+    :param name: str: Name of the NFT
+    :param description: str: Description of the NFT
+    :param url: str: URL of the NFT
+    :param owner: str: Public key of the owner
+    """
+    return blockchain.create_nft(
+        datetime.now(),
+        data={
+            "type": "nft-create",
+            "data": {
+                "name": name,
+                "description": description,
+                "url": url,
+                "owner": owner,
+            },
+        },
+    )
+
+
+@router.post("/nft-transfer")
+def transfer_nft(nft: str, from_: str, to: str):
+    """
+    Transfer an NFT
+
+    :param nft: str: ID of the NFT
+    :param from_: str: Private key of the sender (pve)
+    :param to: str: Public key of the receiver (pbc)
+    """
+    try:
+        transaction = blockchain.transfer_nft(
+            datetime.now(),
+            data={
+                "type": "nft-transfer",
+                "data": {"nft": nft, "from": from_, "to": to},
+            },
+        )
+        return transaction
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @router.get("/sync")
 def sync(key: str):
     """
