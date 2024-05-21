@@ -8,7 +8,7 @@ from app.config import parse_config
 
 
 logger = logging.getLogger(__name__)
-coloredlogs.install(level=logging.INFO)
+coloredlogs.install(level="DEBUG", logger=logger)
 
 if not os.path.exists(os.getcwd() + "/blockchain.json"):
     logger.info("Creating new blockchain")
@@ -120,7 +120,7 @@ def create_nft(name: str, description: str, url: str, owner: str):
     :param url: str: URL of the NFT
     :param owner: str: Public key of the owner
     """
-    return blockchain.create_nft(
+    return blockchain.create_transaction(
         datetime.now(),
         data={
             "type": "nft-create",
@@ -144,7 +144,7 @@ def transfer_nft(nft: str, from_: str, to: str):
     :param to: str: Public key of the receiver (pbc)
     """
     try:
-        transaction = blockchain.transfer_nft(
+        transaction = blockchain.create_transaction(
             datetime.now(),
             data={
                 "type": "nft-transfer",

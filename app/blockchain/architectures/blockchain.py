@@ -1,6 +1,3 @@
-from datetime import datetime
-
-
 class Blockchain:
     """
     Blockchain class

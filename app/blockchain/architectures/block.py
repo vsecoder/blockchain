@@ -13,7 +13,9 @@ class Block:
     :param timestamp: float: Timestamp of the block
     :param transactions: list: List of transactions
     :param previous_hash: str: Hash of the previous block
+    :param proof: int: Proof of work
     :param addresses: dict: Wallet addresses
+    :param nft: list: List of NFTs
     """
 
     def __init__(
@@ -21,6 +23,7 @@ class Block:
         timestamp,
         transactions: Union[str, list] = [],
         previous_hash="",
+        proof=0,
         addresses="",
         nft="",
     ):
@@ -30,6 +33,7 @@ class Block:
         self.transactions = transactions
         self.previous_hash = previous_hash
         self.hash = self.get_hash()
+        self.proof = proof
         self.status = 0  # 0 = pending, 1 = completed
         self._complete()
 
@@ -112,6 +116,7 @@ class Block:
             "hash": self.hash,
             "status": self.status,
             "nft": [nft.to_dict() for nft in self.nft] if self.nft else "",
+            "proof": self.proof if self.proof else 0,
         }
 
         return obj
@@ -148,4 +153,5 @@ class Block:
         self.previous_hash = obj["previous_hash"]
         self.hash = obj["hash"]
         self.status = obj["status"]
+        self.proof = obj["proof"]
         return self

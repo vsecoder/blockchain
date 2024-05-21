@@ -4,7 +4,7 @@ from .architectures.wallet import Wallet
 from .architectures.transaction import Transaction
 from datetime import datetime
 from typing import Union
-import os, json
+import os, json, hashlib
 
 
 class Coin:
@@ -50,14 +50,18 @@ class Coin:
 
         return True
 
+    def _valid_proof(self, last_proof, proof):
+        guess = f"{last_proof}{proof}".encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
+
+    def _proof_of_work(self, last_proof) -> int:
+        proof = 0
+        while self._valid_proof(last_proof, proof) is False:
+            proof += 1
+        return proof
+
     def _create_block(self, addresses=None) -> Union[Block, bool]:
-        nonce = self.coin.difficulty**12
-
-        # Proof of work
-        # https://habr.com/ru/articles/690458/
-        for _ in range(nonce):
-            pass
-
         if len(self.coin.pending_transactions) >= self.coin.minimum_transactions:
             # block.hash, block.timestamp, block.transactions, block.previous_hash
             transactions = self.coin.pending_transactions
@@ -66,6 +70,7 @@ class Coin:
                 datetime.now().timestamp(),
                 transactions,
                 self.coin.chain[len(self.coin.chain) - 1].hash,
+                self._proof_of_work(self.coin.chain[len(self.coin.chain) - 1].proof),
                 addresses,
             )
             self.coin.chain.append(block)
@@ -78,34 +83,6 @@ class Coin:
     def create_transaction(self, timestamp, data) -> None:
         """
         Create a new transaction
-
-        :param timestamp: float: Timestamp of the transaction
-        :param data: dict: Data of the transaction
-
-        :return: None
-        """
-        self.coin.pending_transactions.append(Transaction(timestamp, data=data))
-        self._create_block(
-            addresses=self.Wallet,
-        )
-
-    def transfer_nft(self, timestamp, data) -> None:
-        """
-        Transfer an NFT
-
-        :param timestamp: float: Timestamp of the transaction
-        :param data: dict: Data of the transaction
-
-        :return: None
-        """
-        self.coin.pending_transactions.append(Transaction(timestamp, data=data))
-        self._create_block(
-            addresses=self.Wallet,
-        )
-
-    def create_nft(self, timestamp, data) -> None:
-        """
-        Create a new NFT
 
         :param timestamp: float: Timestamp of the transaction
         :param data: dict: Data of the transaction
