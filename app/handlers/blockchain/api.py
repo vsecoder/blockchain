@@ -16,14 +16,13 @@ if not os.path.exists(os.getcwd() + "/blockchain.json"):
 else:
     logger.info("Restoring blockchain")
     with open(os.getcwd() + "/blockchain.json", "r") as file:
-        data = json.loads(file.read())
+        data = json.load(file)
         blockchain = Coin(restore=True).from_dict(data)
 router = APIRouter()
 
 if not blockchain.validate_chain():
     raise Exception("Invalid chain")
-else:
-    logger.info("Chain is valid")
+logger.info("Chain is valid")
 
 config = parse_config("config.toml").web.get_config()
 SECRET_KEY = config["key"]
@@ -57,14 +56,14 @@ def transfer(from_: str, to: str, amount: float):
     :param to: str: Public key of the receiver (pbc)
     """
     try:
-        transaction = blockchain.create_transaction(
+        blockchain.create_transaction(
             datetime.now(),
             data={
                 "type": "token-transfer",
                 "data": {"to": to, "from": from_, "amount": amount},
             },
         )
-        return transaction
+        return {"status": "success"}
     except Exception as e:
         return {"error": str(e)}
 
@@ -120,7 +119,7 @@ def create_nft(name: str, description: str, url: str, owner: str):
     :param url: str: URL of the NFT
     :param owner: str: Public key of the owner
     """
-    return blockchain.create_transaction(
+    blockchain.create_transaction(
         datetime.now(),
         data={
             "type": "nft-create",
@@ -132,6 +131,7 @@ def create_nft(name: str, description: str, url: str, owner: str):
             },
         },
     )
+    return {"status": "success"}
 
 
 @router.post("/nft-transfer")
@@ -144,14 +144,14 @@ def transfer_nft(nft: str, from_: str, to: str):
     :param to: str: Public key of the receiver (pbc)
     """
     try:
-        transaction = blockchain.create_transaction(
+        blockchain.create_transaction(
             datetime.now(),
             data={
                 "type": "nft-transfer",
                 "data": {"nft": nft, "from": from_, "to": to},
             },
         )
-        return transaction
+        return {"status": "success"}
     except Exception as e:
         return {"error": str(e)}
 

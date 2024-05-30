@@ -15,7 +15,7 @@ class Wallet:
     """
 
     def __init__(self, addresses=None):
-        self.addresses = [] if addresses == None else addresses
+        self.addresses = [] if addresses is None else addresses
 
     def create_wallet(self) -> dict:
         """
@@ -34,8 +34,7 @@ class Wallet:
         if self.validate_address(private_key, public_key) == False:
             self.addresses.append(cred_keys)
             return cred_keys
-        else:
-            return self.create_address()
+        return self.create_address()
 
     def get_balance(self, private_key=None, public_key=None) -> Union[float, str]:
         """
@@ -174,7 +173,7 @@ class Wallet:
 
         :return: List of NFTs or "Failed"
         """
-        if private_key == None or nft == None:
+        if private_key is None or nft is None:
             return "Failed"
 
         for address in self.addresses:
@@ -186,7 +185,7 @@ class Wallet:
         return "Failed"
 
     def _require(self, private_key=None, public_key=None) -> bool:
-        if private_key == None or public_key == None:
+        if private_key is None or public_key is None:
             return False
         return True
 

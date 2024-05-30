@@ -9,9 +9,9 @@ class Transaction:
     :param data: dict: Data of the transaction
     """
 
-    def __init__(self, timestamp, data={}):
+    def __init__(self, timestamp, data):
         self.timestamp = timestamp
-        self.input = data
+        self.input = data if data else {}
         self.hash = self.get_hash()
 
     def get_hash(self) -> str:

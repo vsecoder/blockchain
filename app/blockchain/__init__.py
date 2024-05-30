@@ -40,12 +40,12 @@ class Coin:
 
         :return: bool: True if the chain is valid, False if not
         """
-        for i in range(len(self.coin.chain)):
-            if self.coin.chain[i].transactions[0] != "genisis block":
-                if self.coin.chain[i].get_hash() != self.coin.chain[i].hash:
+        for i, chain in enumerate(self.coin.chain):
+            if chain.transactions[0] != "genisis block":
+                if chain.get_hash() != chain.hash:
                     return False
 
-                if self.coin.chain[i].previous_hash != self.coin.chain[i - 1].hash:
+                if chain.previous_hash != self.coin.chain[i - 1].hash:
                     return False
 
         return True
@@ -76,9 +76,9 @@ class Coin:
             self.coin.chain.append(block)
             self.sync()
             return block
-        else:
-            self.sync()
-            return False
+
+        self.sync()
+        return False
 
     def create_transaction(self, timestamp, data) -> None:
         """
@@ -123,7 +123,7 @@ class Coin:
         Work automatically when a block is created
         """
         with open(os.getcwd() + "/blockchain.json", "w") as file:
-            file.write(json.dumps(self.to_dict()))
+            json.dump(self.to_dict(), file)
 
     """
     ---

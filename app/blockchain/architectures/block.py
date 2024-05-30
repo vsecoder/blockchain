@@ -21,7 +21,7 @@ class Block:
     def __init__(
         self,
         timestamp,
-        transactions: Union[str, list] = [],
+        transactions: Union[str, list],
         previous_hash="",
         proof=0,
         addresses="",
@@ -30,7 +30,7 @@ class Block:
         self.addresses = addresses
         self.nft = nft
         self.timestamp = timestamp
-        self.transactions = transactions
+        self.transactions = transactions if transactions else []
         self.previous_hash = previous_hash
         self.hash = self.get_hash()
         self.proof = proof
