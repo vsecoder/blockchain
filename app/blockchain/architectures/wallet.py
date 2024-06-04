@@ -46,7 +46,7 @@ class Wallet:
         :return: float: Balance of the wallet
         """
         r = self._require(private_key, public_key)
-        if r == False:
+        if r is False:
             return "Private and Public keys are required"
 
         for address in self.addresses:
@@ -64,7 +64,7 @@ class Wallet:
 
         :return: Public key of the wallet (pbc) or "Failed"
         """
-        if private_key == None:
+        if private_key is None:
             return "Failed"
 
         for address in self.addresses:
@@ -81,7 +81,7 @@ class Wallet:
 
         :return: New balance of the wallet or "Failed"
         """
-        if public_key == None or amount == None:
+        if public_key is None or amount is None:
             return "Failed"
 
         for address in self.addresses:
@@ -121,7 +121,7 @@ class Wallet:
 
         :return: list: List of NFTs or "Failed"
         """
-        if public_key == None:
+        if public_key is None:
             return "Failed"
 
         for address in self.addresses:
@@ -137,12 +137,12 @@ class Wallet:
 
         :return: NFT or "Failed"
         """
-        if nft_id == None:
+        if nft_id is None:
             return "Failed"
 
         for address in self.addresses:
             for nft in address["info"]["nfts"]:
-                if nft.id == nft_id:
+                if nft.id is nft_id:
                     return nft
         return "Failed"
 
@@ -155,7 +155,7 @@ class Wallet:
 
         :return: List of NFTs or "Failed"
         """
-        if public_key == None or nft == None:
+        if public_key is None or nft is None:
             return "Failed"
 
         for address in self.addresses:

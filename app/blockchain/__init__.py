@@ -32,7 +32,7 @@ class Coin:
         if not restore:
             self.coin.chain.append(Block(datetime.now().timestamp(), ["genisis block"]))
 
-        self.Wallet = Wallet()
+        self.wallet = Wallet()
 
     def validate_chain(self) -> bool:
         """
@@ -71,7 +71,7 @@ class Coin:
                 transactions,
                 self.coin.chain[len(self.coin.chain) - 1].hash,
                 self._proof_of_work(self.coin.chain[len(self.coin.chain) - 1].proof),
-                addresses,
+                addresses,  # Convert addresses to a string
             )
             self.coin.chain.append(block)
             self.sync()
@@ -91,7 +91,7 @@ class Coin:
         """
         self.coin.pending_transactions.append(Transaction(timestamp, data=data))
         self._create_block(
-            addresses=self.Wallet,
+            addresses=self.wallet,
         )
 
     def get_transaction(self, data) -> Union[Transaction, None]:
@@ -114,7 +114,7 @@ class Coin:
     def to_dict(self) -> dict:
         return {
             "coin": [block.to_dict() for block in self.coin.chain],
-            "Wallet": self.Wallet.to_dict(),
+            "Wallet": self.wallet.to_dict(),
         }
 
     def sync(self) -> None:
@@ -141,5 +141,5 @@ class Coin:
             self.coin.chain.append(block_)
 
         wallet = Wallet()
-        self.Wallet = wallet.from_dict(data["Wallet"])
+        self.wallet = wallet.from_dict(data["Wallet"])
         return self

@@ -21,19 +21,24 @@ class Block:
     def __init__(
         self,
         timestamp,
-        transactions: Union[str, list],
-        previous_hash="",
-        proof=0,
-        addresses="",
-        nft="",
+        transactions: Union[str, list, None] = None,
+        previous_hash: str = "",
+        proof: int = 0,
+        addresses: dict = None,
+        nft: dict = None,
     ):
+        if addresses is None:
+            addresses = {}
+        if nft is None:
+            nft = {}
+
         self.addresses = addresses
         self.nft = nft
         self.timestamp = timestamp
         self.transactions = transactions if transactions else []
-        self.previous_hash = previous_hash
+        self.previous_hash = previous_hash if previous_hash else ""
         self.hash = self.get_hash()
-        self.proof = proof
+        self.proof = proof if proof else 0
         self.status = 0  # 0 = pending, 1 = completed
         self._complete()
 
@@ -132,7 +137,7 @@ class Block:
         for transaction in obj["transactions"]:
             if type(transaction) != str:
                 transaction_class = Transaction(
-                    datetime.fromtimestamp(transaction["timestamp"]),
+                    datetime.fromtimestamp(transaction["timestamp"], None),
                 )
                 self.transactions.append(transaction_class.from_dict(transaction))
             else:

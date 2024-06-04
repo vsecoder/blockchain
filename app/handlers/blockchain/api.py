@@ -4,8 +4,8 @@ import os, json
 import logging
 import coloredlogs
 from datetime import datetime
-from app.config import parse_config
 
+from app.config import parse_config
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG", logger=logger)
@@ -33,7 +33,7 @@ def create_wallet():
     """
     Create a new wallet
     """
-    return blockchain.Wallet.create_wallet()
+    return blockchain.wallet.create_wallet()
 
 
 @router.get("/")
@@ -81,7 +81,7 @@ def credit_wallet(public_key: str, amount: float, key: str):
     """
     if key != SECRET_KEY:
         return {"error": "Invalid key"}
-    return blockchain.Wallet.credit_wallet(public_key, amount)
+    return blockchain.wallet.credit_wallet(public_key, amount)
 
 
 @router.get("/public-key")
@@ -93,7 +93,7 @@ def get_public_key(private_key: str):
 
     :return: str: Public key
     """
-    return blockchain.Wallet.get_public_key(private_key)
+    return blockchain.wallet.get_public_key(private_key)
 
 
 @router.get("/validate")
@@ -106,7 +106,7 @@ def validate_wallet(private_key: str, public_key: str):
 
     :return: bool: True if the wallet is valid, False if not
     """
-    return blockchain.Wallet.validate_wallet(private_key, public_key)
+    return blockchain.wallet.validate_wallet(private_key, public_key)
 
 
 @router.post("/nft")
