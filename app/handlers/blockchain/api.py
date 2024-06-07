@@ -44,7 +44,7 @@ def get_balance(public_key: str, private_key: str):
     :param public_key: str: Public key of the wallet
     :param private_key: str: Private key of the wallet
     """
-    return blockchain.Wallet.get_balance(private_key, public_key)
+    return blockchain.wallet.get_balance(private_key, public_key)
 
 
 @router.post("/transfer")

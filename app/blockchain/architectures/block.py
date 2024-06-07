@@ -137,7 +137,7 @@ class Block:
         for transaction in obj["transactions"]:
             if type(transaction) != str:
                 transaction_class = Transaction(
-                    datetime.fromtimestamp(transaction["timestamp"], None),
+                    datetime.fromtimestamp(transaction["timestamp"]), None
                 )
                 self.transactions.append(transaction_class.from_dict(transaction))
             else:

@@ -107,7 +107,7 @@ class Coin:
                 if transaction.hash == data:
                     return transaction
 
-    class Wallet(Wallet):
+    class wallet(Wallet):
         # this class is a subclass of Wallet
         pass
 

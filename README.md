@@ -26,7 +26,7 @@ pip install requirements.txt
 
 ## Usage
 
-### Edit the `config.toml` file
+### Edit the `config.toml` file from `example.toml`
 
 ```toml
 key = "my_secret_key"
